@@ -83,6 +83,13 @@
             font-weight: bold;
             color: var(--accent);
         }
+    @import url('https://fonts.googleapis.com/css2?family=Cairo&display=swap');
+
+    #invoice {
+        font-family: 'Cairo', sans-serif;
+        direction: rtl;
+        text-align: right;
+    }
 
         /* إخفاء أسهم input[type=number] الافتراضية */
         input[type=number]::-webkit-inner-spin-button,
@@ -104,7 +111,15 @@
             margin-top: 0; /* إزالة الهامش العلوي من الأزرار داخل الحاوية */
         }
 
-    </style>
+    
+
+.item-summary {
+  direction: rtl;
+  unicode-bidi: plaintext;
+  font-family: 'Almarai', sans-serif;
+}
+
+</style>
 </head>
 <body>
     <div class="container">
@@ -467,25 +482,19 @@
         </div>
 
         <div id="disclaimer">
-            <p>
-                هذه القيمة تقديرية بشكل سطحي. لمعرفة تكلفة منزلك الحقيقية، يجب على مهندسي الموقع أن يعاينوا المنزل على أرض الواقع. الأسعار قابلة للتغيير بناءً على توفر القطع وأسعار السوق.
-                <br>للتواصل والاستشارة الدقيقة:
-                <a href="https://wa.me/972566334569" target="_blank">واتساب: +972 56-633-4569</a>
-            </p>
+            <p>الأسعار المذكورة هي تقديرية وقد تخضع للتغيير بناءً على المتطلبات النهائية وتوفر المنتجات.</p>
+            <p>للاستفسارات، يرجى التواصل معنا عبر <a href="tel:+970XXXXXXX">+970XXXXXXX</a> أو زيارة <a href="#">موقعنا الإلكتروني</a>.</p>
         </div>
     </div>
 
     <footer>
-        <div class="container_a">
-            <div class="social-links">
-                <a href="https://www.instagram.com/pih_smart/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="https://www.facebook.com/profile.php?id=61572959214078" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://www.linkedin.com/company/palestine-intelligent-homes" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                <a href="https://wa.me/972566334569" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                <a href="mailto:info@palestineintelligent.homes" aria-label="Email"><i class="fas fa-envelope"></i></a>
-            </div>
-            <p>© <script>document.write(new Date().getFullYear())</script> كل الحقوق محفوظة - Palestine Intelligent Homes | تم التطوير بواسطة <a href="https://www.palestineintelligent.homes/" target="_blank" class="footer-link">PIH</a></p>
+        <div class="social-links">
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
         </div>
+        <p>جميع الحقوق محفوظة &copy; <span id="currentYear"></span></p>
+        <p><a href="#" class="footer-link">اسم شركتك</a></p>
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
@@ -722,17 +731,26 @@
                 alert("يرجى حساب التكلفة أولاً لعرض التقرير.");
                 return;
             }
+
             const element = document.getElementById('invoice');
+
             const opt = {
-                margin:       [10,10,10,10], // top, left, bottom, right
-                filename:     `تقدير_تكلفة_${reportDataStore.customer.name || 'زبون'}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true,  logging: true, dpi: 192, letterRendering: true},
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                margin: [10, 10, 10, 10],
+                filename: `تقدير_تكلفة_${reportDataStore.customer.name || 'زبون'}.pdf`,
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: {
+                    scale: 3,
+                    useCORS: true,
+                    dpi: 300,
+                    letterRendering: true
+                },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // لضمان تطبيق الأنماط بشكل صحيح خاصة الخطوط العربية
-            html2pdf().from(element).set(opt).save().catch(err => console.error("Error generating PDF:", err));
+            // تأكد من تحميل الخطوط قبل توليد PDF
+            document.fonts.ready.then(() => {
+                html2pdf().from(element).set(opt).save().catch(err => console.error("Error generating PDF:", err));
+            });
         }
 
         function generateExcel() {
