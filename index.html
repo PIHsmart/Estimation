@@ -456,7 +456,8 @@
         </form>
 
         <div id="resultsContainer" style="display:none;">
-            <div id="invoice"> <h4>ملخص التقدير</h4>
+            <div id="invoice" style="direction: rtl; text-align: right;">
+                <h4>ملخص التقدير</h4>
                 <div id="customerInfoSummary"></div>
                 <div id="itemsBreakdown"></div>
                 <div id="costsSummary"></div>
@@ -753,6 +754,7 @@
                 ws1_data.push(["نسبته من المشروع (%):", reportDataStore.partner.percentage]);
             }
             const ws1 = XLSX.utils.aoa_to_sheet(ws1_data);
+            ws1['!views'] = [{rtl: true}]; // <--- إضافة هذا السطر
             XLSX.utils.book_append_sheet(wb, ws1, "معلومات الزبون والشريك");
 
 
@@ -766,6 +768,7 @@
             });
             ws2_data.push(["", "", "", "", "إجمالي سعر القطع:", reportDataStore.totals.itemsCost]);
             const ws2 = XLSX.utils.aoa_to_sheet(ws2_data);
+            ws2['!views'] = [{rtl: true}]; // <--- إضافة هذا السطر
             XLSX.utils.book_append_sheet(wb, ws2, "تفاصيل القطع");
 
 
@@ -784,6 +787,7 @@
             ws3_data.push(["الإجمالي النهائي للمشروع:", reportDataStore.totals.finalTotal]);
 
             const ws3 = XLSX.utils.aoa_to_sheet(ws3_data);
+            ws3['!views'] = [{rtl: true}]; // <--- إضافة هذا السطر
             XLSX.utils.book_append_sheet(wb, ws3, "التكاليف والإجماليات");
 
 
