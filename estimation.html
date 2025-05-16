@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقدير تكلفة المنزل الذكي</title>
+    <link rel="stylesheet" href="pihsurvey1.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* أنماط إضافية خاصة بالأداة */
+        .item-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 10px;
+            flex-wrap: wrap; /* للسماح بالتفاف العناصر في الشاشات الصغيرة */
+        }
+        .item-row label {
+            flex-basis: 200px; /* تحديد عرض أساسي للعنوان */
+            margin-bottom: 0; /* إزالة الهامش السفلي الافتراضي للـ label */
+        }
+        .item-row .quantity-controls {
+            display: flex;
+            align-items: center;
+        }
+        .item-row input[type="number"] {
+            width: 70px;
+            text-align: center;
+            margin: 0 5px; /* تعديل الهوامش هنا */
+            /* إزالة margin-top الافتراضي من input */
+            margin-top: 0;
+        }
+        .item-row .quantity-btn {
+            background-color: var(--primary-medium);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+        .item-row .quantity-btn:hover {
+            background-color: var(--accent);
+        }
+
+        .item-row select {
+             flex-grow: 1; /* السماح للعناصر بالتمدد لملء المساحة المتاحة */
+             min-width: 100px; /* تحديد أقل عرض ممكن */
+             margin-top: 0; /* إزالة margin-top الافتراضي من select */
+        }
+
+        .section-title {
+            margin-top: 30px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-medium);
+            color: var(--primary-dark);
+            text-align: right; /* ليتناسب مع اتجاه الصفحة */
+        }
+        #resultsSummary {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: var(--gray-light);
+            border-radius: 8px;
+            border: 1px solid var(--gray-medium);
+        }
+        #resultsSummary h4 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gray-medium);
+        }
+        #resultsSummary p {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        #resultsSummary .item-summary span, #resultsSummary .total-summary span {
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        /* إخفاء أسهم input[type=number] الافتراضية */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+        input[type=number] {
+          -moz-appearance: textfield; /* Firefox */
+        }
+
+        /* للتأكد من أن حاوية الأزرار لا تدفع العناصر الأخرى */
+        .button-container {
+            display: flex;
+            gap: 15px; /* مسافة بين الأزرار */
+            margin-top: 30px;
+        }
+        .button-container button {
+            margin-top: 0; /* إزالة الهامش العلوي من الأزرار داخل الحاوية */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="P I H.gif" alt="شعار الشركة" class="header-main-gif"> <h2>تقدير تكلفة تجهيزات المنزل الذكي</h2>
+        </header>
+
+        <form id="smartHomeForm">
+            <h3 class="section-title">الأجهزة</h3>
+
+            <h4>مفاتيح إنارة</h4>
+            <div class="item-row">
+                <label for="light_single">مفتاح مفرد:</label>
+                <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" onclick="decrement('light_single_qty')"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="light_single_qty" name="light_single_qty" value="0" min="0" data-price="82">
+                    <button type="button" class="quantity-btn" onclick="increment('light_single_qty')"><i class="fas fa-plus"></i></button>
+                </div>
+                <select id="light_single_color" name="light_single_color">
+                    <option value="أبيض">أبيض</option>
+                    <option value="أسود">أسود</option>
+                </select>
+                <select id="light_single_type" name="light_single_type">
+                    <option value="زغبي">زغبي</option>
+                    <option value="واي فاي">واي فاي</option>
+                </select>
+            </div>
+            <div class="item-row">
+                <label for="light_double">مفتاح زوجي:</label>
+                 <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" onclick="decrement('light_double_qty')"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="light_double_qty" name="light_double_qty" value="0" min="0" data-price="85">
+                    <button type="button" class="quantity-btn" onclick="increment('light_double_qty')"><i class="fas fa-plus"></i></button>
+                </div>
+                <select id="light_double_color" name="light_double_color">
+                    <option value="أبيض">أبيض</option>
+                    <option value="أسود">أسود</option>
+                </select>
+                <select id="light_double_type" name="light_double_type">
+                    <option value="زغبي">زغبي</option>
+                    <option value="واي فاي">واي فاي</option>
+                </select>
+            </div>
+            <div class="item-row">
+                <label for="light_triple">مفتاح ثلاثي:</label>
+                <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" onclick="decrement('light_triple_qty')"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="light_triple_qty" name="light_triple_qty" value="0" min="0" data-price="90">
+                    <button type="button" class="quantity-btn" onclick="increment('light_triple_qty')"><i class="fas fa-plus"></i></button>
+                </div>
+                <select id="light_triple_color" name="light_triple_color">
+                    <option value="أبيض">أبيض</option>
+                    <option value="أسود">أسود</option>
+                </select>
+                <select id="light_triple_type" name="light_triple_type">
+                    <option value="زغبي">زغبي</option>
+                    <option value="واي فاي">واي فاي</option>
+                </select>
+            </div>
+            <div class="item-row">
+                <label for="light_quad">مفتاح رباعي:</label>
+                <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" onclick="decrement('light_quad_qty')"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="light_quad_qty" name="light_quad_qty" value="0" min="0" data-price="95">
+                    <button type="button" class="quantity-btn" onclick="increment('light_quad_qty')"><i class="fas fa-plus"></i></button>
+                </div>
+                <select id="light_quad_color" name="light_quad_color">
+                    <option value="أبيض">أبيض</option>
+                    <option value="أسود">أسود</option>
+                </select>
+                <select id="light_quad_type" name="light_quad_type">
+                    <option value="زغبي">زغبي</option>
+                    <option value="واي فاي">واي فاي</option>
+                </select>
+            </div>
+
+            <h4>أبجورات</h4>
+            <div class="item-row">
+                <label for="shutter_single">مفتاح أبجور مفرد:</label>
+                <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" onclick="decrement('shutter_single_qty')"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="shutter_single_qty" name="shutter_single_qty" value="0" min="0" data-price="75">
+                    <button type="button" class="quantity-btn" onclick="increment('shutter_single_qty')"><i class="fas fa-plus"></i></button>
+                </div>
+                <select id="shutter_single_color" name="shutter_single_color">
+                    <option value="أبيض">أبيض</option>
+                    <option value="أسود">أسود</option>
+                </select>
+                <select id="shutter_single_type" name="shutter_single_type">
+                    <option value="زغبي">زغبي</option>
+                    <option value="واي فاي">واي فاي</option>
+                </select>
+            </div>
+            <div class="item-row">
+                <label for="shutter_double">مفتاح أبجور مجوز:</label>
+                <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" onclick="decrement('shutter_double_qty')"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="shutter_double_qty" name="shutter_double_qty" value="0" min="0" data-price="90">
+                    <button type="button" class="quantity-btn" onclick="increment('shutter_double_qty')"><i class="fas fa-plus"></i></button>
+                </div>
+                <select id="shutter_double_color" name="shutter_double_color">
+                    <option value="أبيض">أبيض</option>
+                    <option value="أسود">أسود</option>
+                </select>
+                <select id="shutter_double_type" name="shutter_double_type">
+                    <option value="زغبي">زغبي</option>
+                    <option value="واي فاي">واي فاي</option>
+                </select>
+            </div>
+             <div class="item-row">
+                <label for="shutter_single_bulb">مفتاح أبجور مفرد مع لمبة:</label>
+                <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" onclick="decrement('shutter_single_bulb_qty')"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="shutter_single_bulb_qty" name="shutter_single_bulb_qty" value="0" min="0" data-price="85">
+                    <button type="button" class="quantity-btn" onclick="increment('shutter_single_bulb_qty')"><i class="fas fa-plus"></i></button>
+                </div>
+                <select id="shutter_single_bulb_color" name="shutter_single_bulb_color">
+                    <option value="أبيض">أبيض</option>
+                    <option value="أسود">أسود</option>
+                </select>
+                <select id="shutter_single_bulb_type" name="shutter_single_bulb_type">
+                    <option value="زغبي">زغبي</option>
+                    <option value="واي فاي">واي فاي</option>
+                </select>
+            </div>
+
+            <h4>راوتر زيغبي</h4>
+            <div class="item-row">
+                <label for="zigbee_router">راوتر زيغبي:</label>
+                <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" onclick="decrement('zigbee_router_qty')"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="zigbee_router_qty" name="zigbee_router_qty" value="0" min="0">
+                     <button type="button" class="quantity-btn" onclick="increment('zigbee_router_qty')"><i class="fas fa-plus"></i></button>
+                </div>
+                <select id="zigbee_router_color" name="zigbee_router_color">
+                    <option value="أبيض">أبيض</option>
+                    <option value="أسود">أسود</option>
+                </select>
+                <select id="zigbee_router_type" name="zigbee_router_type" data-price-s Wired="90" data-price-Wireless="92">
+                    <option value="سلكي">سلكي (90)</option>
+                    <option value="لاسلكي">لاسلكي (92)</option>
+                </select>
+            </div>
+
+            <h4>حساسات</h4>
+            <div class="item-row">
+                <label for="sensor_motion">حساس حركة:</label>
+                 <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" onclick="decrement('sensor_motion_qty')"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="sensor_motion_qty" name="sensor_motion_qty" value="0" min="0">
+                    <button type="button" class="quantity-btn" onclick="increment('sensor_motion_qty')"><i class="fas fa-plus"></i></button>
+                </div>
+                <select id="sensor_motion_type" name="sensor_motion_type" data-price-Zigbee="40" data-price-WiFi="38">
+                    <option value="زغبي">زغبي (40)</option>
+                    <option value="واي فاي">واي فاي (38)</option>
+                </select>
+            </div>
+            <div class="item-row">
+                <label for="sensor_presence">حساس تواجد:</label>
+                <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" onclick="decrement('sensor_presence_qty')"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="sensor_presence_qty" name="sensor_presence_qty" value="0" min="0">
+                    <button type="button" class="quantity-btn" onclick="increment('sensor_presence_qty')"><i class="fas fa-plus"></i></button>
+                </div>
+                <select id="sensor_presence_type" name="sensor_presence_type" data-price-Ceiling="85" data-price-Wall="80">
+                    <option value="سقفي">سقفي (85)</option>
+                    <option value="حائطي">حائطي (80)</option>
+                </select>
+            </div>
+             <div class="item-row">
+                <label for="sensor_gas">حساس غاز:</label>
+                <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" onclick="decrement('sensor_gas_qty')"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="sensor_gas_qty" name="sensor_gas_qty" value="0" min="0">
+                    <button type="button" class="quantity-btn" onclick="increment('sensor_gas_qty')"><i class="fas fa-plus"></i></button>
+                </div>
+                <select id="sensor_gas_type" name="sensor_gas_type" data-price-Zigbee="100" data-price-WiFi="95">
+                    <option value="زغبي">زغبي (100)</option>
+                    <option value="واي فاي">واي فاي (95)</option>
+                </select>
+            </div>
+            <div class="item-row">
+                <label for="sensor_door">حساس أبواب:</label>
+                <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" onclick="decrement('sensor_door_qty')"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="sensor_door_qty" name="sensor_door_qty" value="0" min="0">
+                    <button type="button" class="quantity-btn" onclick="increment('sensor_door_qty')"><i class="fas fa-plus"></i></button>
+                </div>
+                <select id="sensor_door_type" name="sensor_door_type" data-price-Zigbee="40" data-price-WiFi="35">
+                    <option value="زغبي">زغبي (40)</option>
+                    <option value="واي فاي">واي فاي (35)</option>
+                </select>
+            </div>
+            <div class="item-row">
+                <label for="sensor_temp_humidity">حساس حرارة/رطوبة:</label>
+                <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" onclick="decrement('sensor_temp_humidity_qty')"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="sensor_temp_humidity_qty" name="sensor_temp_humidity_qty" value="0" min="0">
+                    <button type="button" class="quantity-btn" onclick="increment('sensor_temp_humidity_qty')"><i class="fas fa-plus"></i></button>
+                </div>
+                <select id="sensor_temp_humidity_type" name="sensor_temp_humidity_type" data-price-Zigbee="85" data-price-WiFi="80">
+                    <option value="زغبي">زغبي (85)</option>
+                    <option value="واي فاي">واي فاي (80)</option>
+                </select>
+            </div>
+             <div class="item-row">
+                <label for="sensor_remote_control">حساس تحكم ريموت:</label>
+                <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" onclick="decrement('sensor_remote_control_qty')"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="sensor_remote_control_qty" name="sensor_remote_control_qty" value="0" min="0">
+                    <button type="button" class="quantity-btn" onclick="increment('sensor_remote_control_qty')"><i class="fas fa-plus"></i></button>
+                </div>
+                <select id="sensor_remote_control_type" name="sensor_remote_control_type" data-price-Zigbee="75" data-price-WiFi="65">
+                    <option value="زغبي">زغبي (75)</option>
+                    <option value="واي فاي">واي فاي (65)</option>
+                </select>
+            </div>
+
+
+            <h4>كبسة بويلر</h4>
+            <div class="item-row">
+                <label for="boiler_switch">كبسة بويلر:</label>
+                <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" onclick="decrement('boiler_switch_qty')"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="boiler_switch_qty" name="boiler_switch_qty" value="0" min="0">
+                    <button type="button" class="quantity-btn" onclick="increment('boiler_switch_qty')"><i class="fas fa-plus"></i></button>
+                </div>
+                <select id="boiler_switch_color" name="boiler_switch_color">
+                    <option value="أبيض">أبيض</option>
+                    <option value="أسود">أسود</option>
+                </select>
+                <select id="boiler_switch_type" name="boiler_switch_type" data-price-Zigbee="80" data-price-WiFi="75">
+                    <option value="زغبي">زغبي (80)</option>
+                    <option value="واي فاي">واي فاي (75)</option>
+                </select>
+            </div>
+
+            <h4>شاشات</h4>
+            <div class="item-row">
+                <label for="screen_5inch">شاشة 5 انش:</label>
+                <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" onclick="decrement('screen_5inch_qty')"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="screen_5inch_qty" name="screen_5inch_qty" value="0" min="0" data-price="550">
+                    <button type="button" class="quantity-btn" onclick="increment('screen_5inch_qty')"><i class="fas fa-plus"></i></button>
+                </div>
+                 <select id="screen_5inch_color" name="screen_5inch_color"> <option value="أبيض">أبيض</option>
+                    <option value="أسود">أسود</option>
+                </select>
+            </div>
+            <div class="item-row">
+                <label for="screen_10inch">شاشة 10.1 انش:</label>
+                <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" onclick="decrement('screen_10inch_qty')"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="screen_10inch_qty" name="screen_10inch_qty" value="0" min="0" data-price="1600">
+                    <button type="button" class="quantity-btn" onclick="increment('screen_10inch_qty')"><i class="fas fa-plus"></i></button>
+                </div>
+                <select id="screen_10inch_color" name="screen_10inch_color"> <option value="أبيض">أبيض</option>
+                    <option value="أسود">أسود</option>
+                </select>
+            </div>
+
+            <h4>أليكسا</h4>
+            <div class="item-row">
+                <label for="alexa_echo_pop">أليكسا ايكو بوب:</label>
+                <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" onclick="decrement('alexa_echo_pop_qty')"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="alexa_echo_pop_qty" name="alexa_echo_pop_qty" value="0" min="0" data-price="450">
+                    <button type="button" class="quantity-btn" onclick="increment('alexa_echo_pop_qty')"><i class="fas fa-plus"></i></button>
+                </div>
+                 <select id="alexa_echo_pop_color" name="alexa_echo_pop_color"> <option value="أبيض">أبيض</option>
+                    <option value="أسود">أسود</option>
+                     <option value="أزرق">أزرق</option>
+                     <option value="رمادي">رمادي</option>
+                </select>
+            </div>
+            <div class="item-row">
+                <label for="alexa_echo_spot">أليكسا ايكو سبوت:</label>
+                 <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" onclick="decrement('alexa_echo_spot_qty')"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="alexa_echo_spot_qty" name="alexa_echo_spot_qty" value="0" min="0" data-price="350">
+                    <button type="button" class="quantity-btn" onclick="increment('alexa_echo_spot_qty')"><i class="fas fa-plus"></i></button>
+                </div>
+                <select id="alexa_echo_spot_color" name="alexa_echo_spot_color"> <option value="أبيض">أبيض</option>
+                    <option value="أسود">أسود</option>
+                </select>
+            </div>
+
+            <h3 class="section-title">جمع التكاليف</h3>
+            <div class="item-row">
+                <label for="installation_cost">تكلفة التركيب (شيكل):</label>
+                <input type="number" id="installation_cost" name="installation_cost" value="0" min="0" style="width:auto; flex-grow:1;">
+            </div>
+            <div class="item-row">
+                <label for="mobile_programming_cost">تكلفة برمجة الهاتف المحمول (شيكل):</label>
+                <input type="number" id="mobile_programming_cost" name="mobile_programming_cost" value="0" min="0" style="width:auto; flex-grow:1;">
+            </div>
+            <div class="item-row">
+                <label for="sound_system_programming_cost">تكلفة برمجة نظام الصوت (شيكل):</label>
+                <input type="number" id="sound_system_programming_cost" name="sound_system_programming_cost" value="0" min="0" style="width:auto; flex-grow:1;">
+            </div>
+
+            <h3 class="section-title">عن طريق طرف ثالث؟</h3>
+            <div class="item-row">
+                <label for="third_party_check">هل المشروع عن طريق شريك؟</label>
+                <input type="checkbox" id="third_party_check" name="third_party_check" onchange="toggleThirdPartyFields()">
+            </div>
+            <div id="third_party_fields" style="display:none;">
+                <div class="item-row">
+                    <label for="partner_name">اسم الشريك:</label>
+                    <input type="text" id="partner_name" name="partner_name" style="width:auto; flex-grow:1;">
+                </div>
+                <div class="item-row">
+                    <label for="partner_phone">رقم هاتف الشريك:</label>
+                    <input type="text" id="partner_phone" name="partner_phone" style="width:auto; flex-grow:1;">
+                </div>
+                <div class="item-row">
+                    <label for="partner_percentage">نسبته من المشروع (%):</label>
+                    <input type="number" id="partner_percentage" name="partner_percentage" value="0" min="0" max="100" style="width:auto; flex-grow:1;">
+                </div>
+            </div>
+
+            <h3 class="section-title">معلومات الزبون</h3>
+            <div class="item-row">
+                <label for="customer_name">الاسم الرباعي:</label>
+                <input type="text" id="customer_name" name="customer_name" required style="width:auto; flex-grow:1;">
+            </div>
+            <div class="item-row">
+                <label for="customer_id">رقم الهوية:</label>
+                <input type="text" id="customer_id" name="customer_id" style="width:auto; flex-grow:1;">
+            </div>
+            <div class="item-row">
+                <label for="customer_phone">رقم الهاتف:</label>
+                <input type="text" id="customer_phone" name="customer_phone" required style="width:auto; flex-grow:1;">
+            </div>
+            <div class="item-row">
+                <label for="customer_location">موقع المنزل:</label>
+                <input type="text" id="customer_location" name="customer_location" style="width:auto; flex-grow:1;">
+            </div>
+            <div class="item-row">
+                <label for="customer_notes">ملاحظات إضافية:</label>
+                <textarea id="customer_notes" name="customer_notes" rows="3" style="width:auto; flex-grow:1;"></textarea>
+            </div>
+
+            <div class="button-container">
+                <button type="button" onclick="calculateAndDisplayResults()">احسب التكلفة والتقرير</button>
+                <button type="button" id="downloadPdfButton" onclick="generatePdf()">تصدير كـ PDF</button>
+                <button type="button" onclick="generateExcel()">تصدير كـ Excel</button>
+            </div>
+        </form>
+
+        <div id="resultsContainer" style="display:none;">
+            <div id="invoice"> <h4>ملخص التقدير</h4>
+                <div id="customerInfoSummary"></div>
+                <div id="itemsBreakdown"></div>
+                <div id="costsSummary"></div>
+                <div id="partnerShareSummary"></div>
+                <p><strong>الإجمالي النهائي للمشروع: <span id="finalTotal">0</span> شيكل</strong></p>
+            </div>
+        </div>
+
+         <div id="disclaimer">
+            <p>الأسعار المذكورة هي تقديرية وقد تخضع للتغيير بناءً على المتطلبات النهائية وتوفر المنتجات.</p>
+            <p>للاستفسارات، يرجى التواصل معنا عبر <a href="tel:+970XXXXXXX">+970XXXXXXX</a> أو زيارة <a href="#">موقعنا الإلكتروني</a>.</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="social-links">
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        </div>
+        <p>جميع الحقوق محفوظة &copy; <span id="currentYear"></span></p>
+        <p><a href="#" class="footer-link">اسم شركتك</a></p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        function increment(inputId) {
+            const input = document.getElementById(inputId);
+            input.value = parseInt(input.value) + 1;
+        }
+
+        function decrement(inputId) {
+            const input = document.getElementById(inputId);
+            const currentValue = parseInt(input.value);
+            if (currentValue > 0) {
+                input.value = currentValue - 1;
+            }
+        }
+
+        function toggleThirdPartyFields() {
+            const checkbox = document.getElementById('third_party_check');
+            const fields = document.getElementById('third_party_fields');
+            fields.style.display = checkbox.checked ? 'block' : 'none';
+        }
+
+        function getPriceForItem(qtyElementId, priceAttributeSourceId, typeSelectId, typePricePrefix) {
+            const qty = parseInt(document.getElementById(qtyElementId).value) || 0;
+            if (qty === 0) return { quantity: 0, price: 0, subTotal: 0, color: '', type: '' };
+
+            const qtyElement = document.getElementById(qtyElementId);
+            let price = 0;
+            let type = '';
+            let color = '';
+
+            // الحصول على اللون (إذا وجد)
+            const colorSelectId = qtyElementId.replace('_qty', '_color');
+            const colorElement = document.getElementById(colorSelectId);
+            if (colorElement) {
+                color = colorElement.value;
+            }
+
+
+            if (typeSelectId) {
+                const typeElement = document.getElementById(typeSelectId);
+                type = typeElement.value; // النص المعروض للخيار المحدد
+                const selectedOption = typeElement.options[typeElement.selectedIndex];
+                const priceKey = typePricePrefix + selectedOption.text.split(' ')[0].replace('(', '').replace(')', ''); // e.g. data-price-Zigbee
+                price = parseFloat(selectedOption.dataset[priceKey.toLowerCase().replace(/\s+/g, '')] || selectedOption.dataset.price || qtyElement.dataset.price || typeElement.dataset[priceKey.toLowerCase()] || typeElement.dataset['price' + type] || 0);
+
+
+                // حالة خاصة للراوتر و الحساسات التي تعتمد على النوع لاختيار السعر من data attribute على الـ select
+                if(qtyElementId === 'zigbee_router_qty'){
+                    price = parseFloat(selectedOption.value === 'سلكي' ? typeElement.dataset.priceSWired : typeElement.dataset.priceSWireless);
+                } else if (typeSelectId.startsWith('sensor_motion_type')) {
+                    price = parseFloat(selectedOption.value === 'زغبي' ? typeElement.dataset.priceZigbee : typeElement.dataset.priceWifi);
+                } else if (typeSelectId.startsWith('sensor_presence_type')) {
+                    price = parseFloat(selectedOption.value === 'سقفي' ? typeElement.dataset.priceCeiling : typeElement.dataset.priceWall);
+                } else if (typeSelectId.startsWith('sensor_gas_type')) {
+                     price = parseFloat(selectedOption.value === 'زغبي' ? typeElement.dataset.priceZigbee : typeElement.dataset.priceWifi);
+                } else if (typeSelectId.startsWith('sensor_door_type')) {
+                     price = parseFloat(selectedOption.value === 'زغبي' ? typeElement.dataset.priceZigbee : typeElement.dataset.priceWifi);
+                } else if (typeSelectId.startsWith('sensor_temp_humidity_type')) {
+                     price = parseFloat(selectedOption.value === 'زغبي' ? typeElement.dataset.priceZigbee : typeElement.dataset.priceWifi);
+                } else if (typeSelectId.startsWith('sensor_remote_control_type')) {
+                     price = parseFloat(selectedOption.value === 'زغبي' ? typeElement.dataset.priceZigbee : typeElement.dataset.priceWifi);
+                } else if (typeSelectId.startsWith('boiler_switch_type')) {
+                     price = parseFloat(selectedOption.value === 'زغبي' ? typeElement.dataset.priceZigbee : typeElement.dataset.priceWifi);
+                }
+
+
+            } else if (priceAttributeSourceId) { // إذا كان السعر على عنصر آخر (مثل input نفسه)
+                 price = parseFloat(document.getElementById(priceAttributeSourceId).dataset.price) || 0;
+            }
+
+
+            return {
+                quantity: qty,
+                price: price,
+                subTotal: qty * price,
+                color: color,
+                type: type
+            };
+        }
+
+
+        let reportDataStore = {}; // لتخزين البيانات للتقارير
+
+        function calculateAndDisplayResults() {
+            reportDataStore = { items: [], costs: {}, partner: {}, customer: {}, totals: {} };
+            let totalItemsCost = 0;
+            let itemsBreakdownHtml = '<h4>تفاصيل القطع:</h4>';
+
+            const itemsToCalculate = [
+                { id: 'light_single', name: 'مفتاح مفرد', typeSelectId: 'light_single_type' },
+                { id: 'light_double', name: 'مفتاح زوجي', typeSelectId: 'light_double_type' },
+                { id: 'light_triple', name: 'مفتاح ثلاثي', typeSelectId: 'light_triple_type' },
+                { id: 'light_quad', name: 'مفتاح رباعي', typeSelectId: 'light_quad_type' },
+                { id: 'shutter_single', name: 'مفتاح أبجور مفرد', typeSelectId: 'shutter_single_type' },
+                { id: 'shutter_double', name: 'مفتاح أبجور مجوز', typeSelectId: 'shutter_double_type' },
+                { id: 'shutter_single_bulb', name: 'مفتاح أبجور مفرد مع لمبة', typeSelectId: 'shutter_single_bulb_type' },
+                { id: 'zigbee_router', name: 'راوتر زيغبي', typeSelectId: 'zigbee_router_type' },
+                { id: 'sensor_motion', name: 'حساس حركة', typeSelectId: 'sensor_motion_type' },
+                { id: 'sensor_presence', name: 'حساس تواجد', typeSelectId: 'sensor_presence_type' },
+                { id: 'sensor_gas', name: 'حساس غاز', typeSelectId: 'sensor_gas_type' },
+                { id: 'sensor_door', name: 'حساس أبواب', typeSelectId: 'sensor_door_type' },
+                { id: 'sensor_temp_humidity', name: 'حساس حرارة/رطوبة', typeSelectId: 'sensor_temp_humidity_type' },
+                { id: 'sensor_remote_control', name: 'حساس تحكم ريموت', typeSelectId: 'sensor_remote_control_type' },
+                { id: 'boiler_switch', name: 'كبسة بويلر', typeSelectId: 'boiler_switch_type' },
+                { id: 'screen_5inch', name: 'شاشة 5 انش (لون: ' + document.getElementById('screen_5inch_color').value + ')' , priceSourceId: 'screen_5inch_qty'},
+                { id: 'screen_10inch', name: 'شاشة 10.1 انش (لون: ' + document.getElementById('screen_10inch_color').value + ')', priceSourceId: 'screen_10inch_qty'},
+                { id: 'alexa_echo_pop', name: 'أليكسا ايكو بوب (لون: ' + document.getElementById('alexa_echo_pop_color').value + ')', priceSourceId: 'alexa_echo_pop_qty'},
+                { id: 'alexa_echo_spot', name: 'أليكسا ايكو سبوت (لون: ' + document.getElementById('alexa_echo_spot_color').value + ')', priceSourceId: 'alexa_echo_spot_qty'}
+            ];
+
+            itemsToCalculate.forEach(item => {
+                const itemQtyId = item.id + '_qty';
+                const itemData = getPriceForItem(itemQtyId, item.priceSourceId || itemQtyId, item.typeSelectId, item.typeSelectId ? item.typeSelectId.split('_')[1] + '_' : ''); //  'type_' or 'sensor_' etc.
+
+                if (itemData.quantity > 0) {
+                    let itemNameForReport = item.name;
+                    if(item.id.includes('screen') || item.id.includes('alexa')) { // تم تضمين اللون في الاسم أعلاه
+                         // لا حاجة لإضافة اللون مرة أخرى
+                    } else {
+                        itemNameForReport += ` (اللون: ${itemData.color || 'N/A'}, النوع: ${itemData.type || 'N/A'})`;
+                    }
+
+
+                    itemsBreakdownHtml += `<p class="item-summary">${itemNameForReport}: ${itemData.quantity} × ${itemData.price} شيكل = <span>${itemData.subTotal.toFixed(2)} شيكل</span></p>`;
+                    totalItemsCost += itemData.subTotal;
+                    reportDataStore.items.push({
+                        name: itemNameForReport,
+                        quantity: itemData.quantity,
+                        price_per_unit: itemData.price,
+                        sub_total: itemData.subTotal,
+                        color: itemData.color,
+                        type: itemData.type
+                    });
+                }
+            });
+            itemsBreakdownHtml += `<p><strong>إجمالي سعر القطع: <span>${totalItemsCost.toFixed(2)} شيكل</span></strong></p>`;
+            document.getElementById('itemsBreakdown').innerHTML = itemsBreakdownHtml;
+            reportDataStore.totals.itemsCost = totalItemsCost;
+
+            const installationCost = parseFloat(document.getElementById('installation_cost').value) || 0;
+            const mobileProgrammingCost = parseFloat(document.getElementById('mobile_programming_cost').value) || 0;
+            const soundSystemProgrammingCost = parseFloat(document.getElementById('sound_system_programming_cost').value) || 0;
+
+            reportDataStore.costs = {
+                installation: installationCost,
+                mobileProgramming: mobileProgrammingCost,
+                soundSystemProgramming: soundSystemProgrammingCost
+            };
+
+            let costsSummaryHtml = `<h4>التكاليف الإضافية:</h4>
+                                 <p>تكلفة التركيب: <span>${installationCost.toFixed(2)} شيكل</span></p>
+                                 <p>تكلفة برمجة الهاتف المحمول: <span>${mobileProgrammingCost.toFixed(2)} شيكل</span></p>
+                                 <p>تكلفة برمجة نظام الصوت: <span>${soundSystemProgrammingCost.toFixed(2)} شيكل</span></p>`;
+            const totalProjectCost = totalItemsCost + installationCost + mobileProgrammingCost + soundSystemProgrammingCost;
+            costsSummaryHtml += `<p><strong>التكلفة الإجمالية (قطع + تركيب وبرمجة): <span id="total_project_cost_val">${totalProjectCost.toFixed(2)} شيكل</span></strong></p>`;
+            document.getElementById('costsSummary').innerHTML = costsSummaryHtml;
+            reportDataStore.totals.projectCost = totalProjectCost;
+
+
+            let partnerShare = 0;
+            let partnerShareHtml = '';
+            if (document.getElementById('third_party_check').checked) {
+                const partnerName = document.getElementById('partner_name').value || 'غير محدد';
+                const partnerPhone = document.getElementById('partner_phone').value || 'غير محدد';
+                const partnerPercentage = parseFloat(document.getElementById('partner_percentage').value) || 0;
+
+                // حصة الشريك من (سعر القطع + تكلفة التركيب)
+                const baseForPartnerShare = totalItemsCost + installationCost;
+                partnerShare = (baseForPartnerShare * partnerPercentage) / 100;
+
+                partnerShareHtml = `<h4>تفاصيل الشريك:</h4>
+                                    <p>اسم الشريك: <span>${partnerName}</span></p>
+                                    <p>رقم هاتف الشريك: <span>${partnerPhone}</span></p>
+                                    <p>نسبة الشريك: <span>${partnerPercentage}%</span></p>
+                                    <p>حصة الشريك من المشروع: <span>${partnerShare.toFixed(2)} شيكل</span></p>`;
+                reportDataStore.partner = {
+                    name: partnerName,
+                    phone: partnerPhone,
+                    percentage: partnerPercentage,
+                    shareAmount: partnerShare
+                };
+            } else {
+                 reportDataStore.partner = null;
+            }
+            document.getElementById('partnerShareSummary').innerHTML = partnerShareHtml;
+             reportDataStore.totals.partnerShare = partnerShare;
+
+
+            // معلومات الزبون
+            const customerName = document.getElementById('customer_name').value;
+            const customerId = document.getElementById('customer_id').value;
+            const customerPhone = document.getElementById('customer_phone').value;
+            const customerLocation = document.getElementById('customer_location').value;
+            const customerNotes = document.getElementById('customer_notes').value;
+
+            reportDataStore.customer = {
+                name: customerName,
+                id: customerId,
+                phone: customerPhone,
+                location: customerLocation,
+                notes: customerNotes
+            };
+
+            let customerInfoHtml = `<h4>معلومات الزبون:</h4>
+                                  <p>الاسم: <span>${customerName}</span></p>
+                                  <p>رقم الهوية: <span>${customerId || 'N/A'}</span></p>
+                                  <p>رقم الهاتف: <span>${customerPhone}</span></p>
+                                  <p>موقع المنزل: <span>${customerLocation || 'N/A'}</span></p>`;
+            if(customerNotes) {
+                customerInfoHtml += `<p>ملاحظات: <span>${customerNotes}</span></p>`;
+            }
+            document.getElementById('customerInfoSummary').innerHTML = customerInfoHtml;
+
+            // الإجمالي النهائي للمشروع (يمكن أن يكون نفس تكلفة المشروع الإجمالية أو يتم تعديله بناءً على منطق عمل مختلف إذا لزم الأمر)
+            // حاليًا، هو نفس الـ totalProjectCost
+            document.getElementById('finalTotal').textContent = totalProjectCost.toFixed(2);
+            reportDataStore.totals.finalTotal = totalProjectCost;
+
+
+            document.getElementById('resultsContainer').style.display = 'block';
+            // للنزول لأسفل الصفحة لعرض النتائج
+            document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth' });
+        }
+
+
+        function generatePdf() {
+            if (!reportDataStore.totals || Object.keys(reportDataStore.totals).length === 0) {
+                alert("يرجى حساب التكلفة أولاً لعرض التقرير.");
+                return;
+            }
+            const element = document.getElementById('invoice');
+            const opt = {
+                margin:       [10,10,10,10], // top, left, bottom, right
+                filename:     `تقدير_تكلفة_${reportDataStore.customer.name || 'زبون'}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true,  logging: true, dpi: 192, letterRendering: true},
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // لضمان تطبيق الأنماط بشكل صحيح خاصة الخطوط العربية
+            html2pdf().from(element).set(opt).save().catch(err => console.error("Error generating PDF:", err));
+        }
+
+        function generateExcel() {
+             if (!reportDataStore.totals || Object.keys(reportDataStore.totals).length === 0) {
+                alert("يرجى حساب التكلفة أولاً لإنشاء ملف Excel.");
+                return;
+            }
+
+            const wb = XLSX.utils.book_new();
+
+            // Sheet 1: Customer and Partner Info
+            const ws1_data = [
+                ["معلومات الزبون"],
+                ["الاسم الرباعي:", reportDataStore.customer.name],
+                ["رقم الهوية:", reportDataStore.customer.id],
+                ["رقم الهاتف:", reportDataStore.customer.phone],
+                ["موقع المنزل:", reportDataStore.customer.location],
+                ["ملاحظات إضافية:", reportDataStore.customer.notes],
+                [], // Empty row for spacing
+            ];
+            if(reportDataStore.partner) {
+                ws1_data.push(["معلومات الشريك"]);
+                ws1_data.push(["اسم الشريك:", reportDataStore.partner.name]);
+                ws1_data.push(["رقم هاتف الشريك:", reportDataStore.partner.phone]);
+                ws1_data.push(["نسبته من المشروع (%):", reportDataStore.partner.percentage]);
+            }
+            const ws1 = XLSX.utils.aoa_to_sheet(ws1_data);
+            XLSX.utils.book_append_sheet(wb, ws1, "معلومات الزبون والشريك");
+
+
+            // Sheet 2: Items Breakdown
+            const ws2_data = [
+                ["تفاصيل القطع"],
+                ["القطعة", "الكمية", "اللون", "النوع", "سعر الوحدة", "الإجمالي الفرعي"]
+            ];
+            reportDataStore.items.forEach(item => {
+                ws2_data.push([item.name.split(' (')[0], item.quantity, item.color || '-', item.type || '-', item.price_per_unit, item.sub_total]);
+            });
+            ws2_data.push(["", "", "", "", "إجمالي سعر القطع:", reportDataStore.totals.itemsCost]);
+            const ws2 = XLSX.utils.aoa_to_sheet(ws2_data);
+            XLSX.utils.book_append_sheet(wb, ws2, "تفاصيل القطع");
+
+
+            // Sheet 3: Costs and Totals
+            const ws3_data = [
+                ["التكاليف الإجمالية"],
+                ["تكلفة التركيب:", reportDataStore.costs.installation],
+                ["تكلفة برمجة الهاتف المحمول:", reportDataStore.costs.mobileProgramming],
+                ["تكلفة برمجة نظام الصوت:", reportDataStore.costs.soundSystemProgramming],
+                ["إجمالي سعر القطع:", reportDataStore.totals.itemsCost],
+                ["التكلفة الإجمالية (قطع + تركيب وبرمجة):", reportDataStore.totals.projectCost],
+            ];
+            if(reportDataStore.partner && reportDataStore.totals.partnerShare !== undefined) {
+                 ws3_data.push(["حصة الشريك من المشروع:", reportDataStore.totals.partnerShare]);
+            }
+            ws3_data.push(["الإجمالي النهائي للمشروع:", reportDataStore.totals.finalTotal]);
+
+            const ws3 = XLSX.utils.aoa_to_sheet(ws3_data);
+            XLSX.utils.book_append_sheet(wb, ws3, "التكاليف والإجماليات");
+
+
+            XLSX.writeFile(wb, `تقرير_تكلفة_${reportDataStore.customer.name || 'زبون'}.xlsx`);
+        }
+
+    </script>
+</body>
+</html>
