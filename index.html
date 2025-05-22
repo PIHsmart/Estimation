@@ -673,7 +673,7 @@
                                  <p>تكلفة برمجة الهاتف المحمول: <span>${mobileProgrammingCost.toFixed(2)} شيكل</span></p>
                                  <p>تكلفة برمجة نظام الصوت: <span>${soundSystemProgrammingCost.toFixed(2)} شيكل</span></p>
                                  <p>خصم: <span>${DiscountCost.toFixed(2)} شيكل</span></p>`;
-            const totalProjectCost = totalItemsCost + installationCost + mobileProgrammingCost + soundSystemProgrammingCost  - DiscountCost;
+            const totalProjectCost = totalItemsCost + installationCost + mobileProgrammingCost + soundSystemProgrammingCost - DiscountCost;
             costsSummaryHtml += `<p><strong>التكلفة الإجمالية (قطع + تركيب وبرمجة): <span id="total_project_cost_val">${totalProjectCost.toFixed(2)} شيكل</span></strong></p>`;
             document.getElementById('costsSummary').innerHTML = costsSummaryHtml;
             reportDataStore.totals.projectCost = totalProjectCost;
@@ -736,7 +736,7 @@
             // الإجمالي النهائي للمشروع (يمكن أن يكون نفس تكلفة المشروع الإجمالية أو يتم تعديله بناءً على منطق عمل مختلف إذا لزم الأمر)
             // حاليًا، هو نفس الـ totalProjectCost
             document.getElementById('finalTotal').textContent = totalProjectCost.toFixed(2);
-            reportDataStore.totals.finalTotal = totalProjectCost;
+            reportDataStore.totals.finalTotal = totalProjectCost - DiscountCost;
 
 
             document.getElementById('resultsContainer').style.display = 'block';
