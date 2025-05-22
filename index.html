@@ -406,6 +406,17 @@
                     <option value="أسود">أسود</option>
                 </select>
             </div>
+            <div class="item-row">
+                <label for="alexa_echo_show">أليكسا ايكو شو:</label>
+                 <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" onclick="decrement('alexa_echo_show_qty')"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="alexa_echo_show_qty" name="alexa_echo_show_qty" value="0" min="0" data-price="1500">
+                    <button type="button" class="quantity-btn" onclick="increment('alexa_echo_show_qty')"><i class="fas fa-plus"></i></button>
+                </div>
+                <select id="alexa_echo_show_color" name="alexa_echo_show_color"> <option value="أبيض">أبيض</option>
+                    <option value="أسود">أسود</option>
+                </select>
+            </div>
 
             <h3 class="section-title">جمع التكاليف</h3>
             <div class="item-row">
@@ -419,6 +430,10 @@
             <div class="item-row">
                 <label for="sound_system_programming_cost">تكلفة برمجة نظام الصوت (شيكل):</label>
                 <input type="number" id="sound_system_programming_cost" name="sound_system_programming_cost" value="0" min="0" style="width:auto; flex-grow:1;">
+            </div>
+            <div class="item-row">
+                <label for="discount"> خصم</label>
+                <input type="number" id="discount" name="discount" value="0" min="0" style="width:auto; flex-grow:1;">
             </div>
 
             <h3 class="section-title">عن طريق طرف ثالث؟</h3>
@@ -608,7 +623,8 @@
                 { id: 'screen_5inch', name: 'شاشة 5 انش (لون: ' + document.getElementById('screen_5inch_color').value + ')' , priceSourceId: 'screen_5inch_qty'},
                 { id: 'screen_10inch', name: 'شاشة 10.1 انش (لون: ' + document.getElementById('screen_10inch_color').value + ')', priceSourceId: 'screen_10inch_qty'},
                 { id: 'alexa_echo_pop', name: 'أليكسا ايكو بوب (لون: ' + document.getElementById('alexa_echo_pop_color').value + ')', priceSourceId: 'alexa_echo_pop_qty'},
-                { id: 'alexa_echo_spot', name: 'أليكسا ايكو سبوت (لون: ' + document.getElementById('alexa_echo_spot_color').value + ')', priceSourceId: 'alexa_echo_spot_qty'}
+                { id: 'alexa_echo_spot', name: 'أليكسا ايكو سبوت (لون: ' + document.getElementById('alexa_echo_spot_color').value + ')', priceSourceId: 'alexa_echo_spot_qty'},
+                { id: 'alexa_echo_show', name: 'أليكسا ايكو شو (لون: ' + document.getElementById('alexa_echo_show_color').value + ')', priceSourceId: 'alexa_echo_show_qty'}
             ];
 
             itemsToCalculate.forEach(item => {
@@ -643,18 +659,21 @@
             const installationCost = parseFloat(document.getElementById('installation_cost').value) || 0;
             const mobileProgrammingCost = parseFloat(document.getElementById('mobile_programming_cost').value) || 0;
             const soundSystemProgrammingCost = parseFloat(document.getElementById('sound_system_programming_cost').value) || 0;
+            const DiscountCost = parseFloat(document.getElementById('discount').value) || 0;
 
             reportDataStore.costs = {
                 installation: installationCost,
                 mobileProgramming: mobileProgrammingCost,
-                soundSystemProgramming: soundSystemProgrammingCost
+                soundSystemProgramming: soundSystemProgrammingCost,
+                Discount: DiscountCost
             };
 
             let costsSummaryHtml = `<h4>التكاليف الإضافية:</h4>
                                  <p>تكلفة التركيب: <span>${installationCost.toFixed(2)} شيكل</span></p>
                                  <p>تكلفة برمجة الهاتف المحمول: <span>${mobileProgrammingCost.toFixed(2)} شيكل</span></p>
-                                 <p>تكلفة برمجة نظام الصوت: <span>${soundSystemProgrammingCost.toFixed(2)} شيكل</span></p>`;
-            const totalProjectCost = totalItemsCost + installationCost + mobileProgrammingCost + soundSystemProgrammingCost;
+                                 <p>تكلفة برمجة نظام الصوت: <span>${soundSystemProgrammingCost.toFixed(2)} شيكل</span></p>
+                                 <p>خصم: <span>${DiscountCost.toFixed(2)} شيكل</span></p>`;
+            const totalProjectCost = totalItemsCost + installationCost + mobileProgrammingCost + soundSystemProgrammingCost - DiscountCost;
             costsSummaryHtml += `<p><strong>التكلفة الإجمالية (قطع + تركيب وبرمجة): <span id="total_project_cost_val">${totalProjectCost.toFixed(2)} شيكل</span></strong></p>`;
             document.getElementById('costsSummary').innerHTML = costsSummaryHtml;
             reportDataStore.totals.projectCost = totalProjectCost;
@@ -803,7 +822,7 @@
                 ["تكلفة برمجة الهاتف المحمول:", reportDataStore.costs.mobileProgramming],
                 ["تكلفة برمجة نظام الصوت:", reportDataStore.costs.soundSystemProgramming],
                 ["إجمالي سعر القطع:", reportDataStore.totals.itemsCost],
-                ["التكلفة الإجمالية (قطع + تركيب وبرمجة):", reportDataStore.totals.projectCost],
+                ["التكلفة الإجمالية (قطع + تركيب وبرمجة-الخصم):", reportDataStore.totals.projectCost],
             ];
             if(reportDataStore.partner && reportDataStore.totals.partnerShare !== undefined) {
                  ws3_data.push(["حصة الشريك من المشروع:", reportDataStore.totals.partnerShare]);
